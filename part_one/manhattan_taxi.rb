@@ -1,4 +1,19 @@
 class ManhattanTaxi
+  class Movement
+    attr_reader :direction
+    def initialize(direction:)
+      @direction = direction
+    end
+
+    def turn
+      direction[0]
+    end
+
+    def number_of_blocks
+      direction[/\d+/].to_i
+    end
+  end
+
   NAVIAGATION = {
     "N" => { "L" => "W", "R" => "E" },
     "E" => { "L" => "N", "R" => "S" },
@@ -7,18 +22,15 @@ class ManhattanTaxi
   }.freeze
 
   def initialize(directions:)
-    @directions        = directions
+    @movements         = directions.map { |d| Movement.new(direction: d) }
     @location          = { x: 0, y: 0 }
     @current_direction = "N"
   end
 
   def travel!
-    directions.each do |direction|
-      turn             = direction[0]
-      number_of_blocks = direction[/\d+/].to_i
-
-      navigate_turn!(turn)
-      navigate_blocks!(number_of_blocks)
+    movements.each do |movement|
+      navigate_turn!(movement.turn)
+      navigate_blocks!(movement.number_of_blocks)
     end
   end
 
@@ -28,7 +40,7 @@ class ManhattanTaxi
 
   private
 
-  attr_reader :directions, :location
+  attr_reader :movements, :location
   attr_accessor :current_direction
 
   def navigate_turn!(turn)
