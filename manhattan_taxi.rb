@@ -1,5 +1,5 @@
-require_relative "manhattan_taxi/movement";
-require_relative "manhattan_taxi/location";
+require_relative "movement";
+require_relative "location";
 
 class ManhattanTaxi
   NAVIAGATION = {
@@ -44,19 +44,19 @@ class ManhattanTaxi
   def navigate_blocks!(number_of_blocks)
     case current_direction
     when "N"
-      travel_north(number_of_blocks)
+      travel_north!(number_of_blocks)
     when "E"
-      travel_east(number_of_blocks)
+      travel_east!(number_of_blocks)
     when "S"
-      travel_south(number_of_blocks)
+      travel_south!(number_of_blocks)
     when "W"
-      travel_west(number_of_blocks)
+      travel_west!(number_of_blocks)
     end
 
     self.current_location = visited_locations.last
   end
 
-  def travel_north(number_of_blocks)
+  def travel_north!(number_of_blocks)
     destination = previous_location.y + number_of_blocks
     y = previous_location.y + 1
 
@@ -66,7 +66,7 @@ class ManhattanTaxi
     end
   end
 
-  def travel_east(number_of_blocks)
+  def travel_east!(number_of_blocks)
     destination = previous_location.x + number_of_blocks
     x = previous_location.x + 1
 
@@ -76,7 +76,7 @@ class ManhattanTaxi
     end
   end
 
-  def travel_south(number_of_blocks)
+  def travel_south!(number_of_blocks)
     destination = previous_location.y - number_of_blocks
     y = previous_location.y - 1
 
@@ -86,7 +86,7 @@ class ManhattanTaxi
     end
   end
 
-  def travel_west(number_of_blocks)
+  def travel_west!(number_of_blocks)
     destination = previous_location.x - number_of_blocks
     x = previous_location.x - 1
 
