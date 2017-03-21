@@ -1,7 +1,7 @@
 class ManhattanTaxi
   class Movement
     attr_reader :direction
-    def initialize(direction:)
+    def initialize(direction)
       @direction = direction
     end
 
@@ -14,6 +14,18 @@ class ManhattanTaxi
     end
   end
 
+  class Location
+    attr_reader :x, :y
+    def initialize(x, y)
+      @x = x
+      @y = y
+    end
+
+    def ==(location)
+      x == location.x && y == location.y
+    end
+  end
+
   NAVIAGATION = {
     "N" => { "L" => "W", "R" => "E" },
     "E" => { "L" => "N", "R" => "S" },
@@ -22,8 +34,8 @@ class ManhattanTaxi
   }.freeze
 
   def initialize(directions:)
-    @movements         = directions.map { |d| Movement.new(direction: d) }
-    @current_location  = { x: 0, y: 0 }
+    @movements         = directions.map { |direction| Movement.new(direction) }
+    @current_location  = Location.new(0, 0)
     @current_direction = "N"
     @visited_locations = []
   end
@@ -69,41 +81,41 @@ class ManhattanTaxi
   end
 
   def travel_north(number_of_blocks)
-    destination = previous_location[:y] + number_of_blocks
-    y = previous_location[:y] + 1
+    destination = previous_location.y + number_of_blocks
+    y = previous_location.y + 1
 
     while y <= destination
-      visited_locations << { x: previous_location[:x], y: y }
+      visited_locations << Location.new(previous_location.x, y)
       y += 1
     end
   end
 
   def travel_east(number_of_blocks)
-    destination = previous_location[:x] + number_of_blocks
-    x = previous_location[:x] + 1
+    destination = previous_location.x + number_of_blocks
+    x = previous_location.x + 1
 
     while x <= destination
-      visited_locations << { x: x, y: previous_location[:y] }
+      visited_locations << Location.new(x, previous_location.y)
       x += 1
     end
   end
 
   def travel_south(number_of_blocks)
-    destination = previous_location[:y] - number_of_blocks
-    y = previous_location[:y] - 1
+    destination = previous_location.y - number_of_blocks
+    y = previous_location.y - 1
 
     while y >= destination
-      visited_locations << { x: previous_location[:x], y: y }
+      visited_locations << Location.new(previous_location.x, y)
       y -= 1
     end
   end
 
   def travel_west(number_of_blocks)
-    destination = previous_location[:x] - number_of_blocks
-    x = previous_location[:x] - 1
+    destination = previous_location.x - number_of_blocks
+    x = previous_location.x - 1
 
     while x >= destination
-      visited_locations << { x: x, y: previous_location[:y] }
+      visited_locations << Location.new(x, previous_location.y)
       x -= 1
     end
   end
@@ -115,6 +127,6 @@ class ManhattanTaxi
   end
 
   def manhattan_distance(location)
-    location[:x].abs + location[:y].abs
+    location.x.abs + location.y.abs
   end
 end
