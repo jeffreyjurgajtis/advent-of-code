@@ -7,7 +7,7 @@ class ManhattanTaxiTest < Test::Unit::TestCase
     taxi = ManhattanTaxi.new(directions: directions)
     taxi.travel!
 
-    assert_equal(taxi.distance_from_start, 5)
+    assert_equal(5, taxi.distance_from_start)
   end
 
   def test_directions_example_two
@@ -15,7 +15,7 @@ class ManhattanTaxiTest < Test::Unit::TestCase
     taxi = ManhattanTaxi.new(directions: directions)
     taxi.travel!
 
-    assert_equal(taxi.distance_from_start, 2)
+    assert_equal(2, taxi.distance_from_start)
   end
 
   def test_directions_example_three
@@ -23,7 +23,7 @@ class ManhattanTaxiTest < Test::Unit::TestCase
     taxi = ManhattanTaxi.new(directions: directions) 
     taxi.travel!
 
-    assert_equal(taxi.distance_from_start, 12)
+    assert_equal(12, taxi.distance_from_start)
   end
 
   def test_distance_to_headquarters_example_one
@@ -31,6 +31,6 @@ class ManhattanTaxiTest < Test::Unit::TestCase
     taxi = ManhattanTaxi.new(directions: directions)
     taxi.travel!
 
-    assert_equal(taxi.distance_to_headquarters, 4)
+    assert_equal(4, taxi.distance_to_headquarters)
   end
 end

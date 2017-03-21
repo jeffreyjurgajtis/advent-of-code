@@ -1,31 +1,7 @@
+require_relative "manhattan_taxi/movement";
+require_relative "manhattan_taxi/location";
+
 class ManhattanTaxi
-  class Movement
-    attr_reader :direction
-    def initialize(direction)
-      @direction = direction
-    end
-
-    def turn
-      direction[0]
-    end
-
-    def number_of_blocks
-      direction[/\d+/].to_i
-    end
-  end
-
-  class Location
-    attr_reader :x, :y
-    def initialize(x, y)
-      @x = x
-      @y = y
-    end
-
-    def ==(location)
-      x == location.x && y == location.y
-    end
-  end
-
   NAVIAGATION = {
     "N" => { "L" => "W", "R" => "E" },
     "E" => { "L" => "N", "R" => "S" },
