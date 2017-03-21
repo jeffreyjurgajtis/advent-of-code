@@ -23,25 +23,33 @@ class ManhattanTaxi
 
   def initialize(directions:)
     @movements         = directions.map { |d| Movement.new(direction: d) }
-    @location          = { x: 0, y: 0 }
+    @current_location  = { x: 0, y: 0 }
     @current_direction = "N"
+    @visited_locations = []
   end
 
   def travel!
     movements.each do |movement|
+      self.previous_location = current_location.clone
       navigate_turn!(movement.turn)
       navigate_blocks!(movement.number_of_blocks)
+
+      record_visited_locations!
     end
   end
 
   def distance_from_start
-    location[:x].abs + location[:y].abs
+    manhattan_distance(current_location)
+  end
+
+  def distance_to_headquarters
+    manhattan_distance(location_of_headquarters)
   end
 
   private
 
-  attr_reader :movements, :location
-  attr_accessor :current_direction
+  attr_reader :movements, :current_location, :visited_locations
+  attr_accessor :current_direction, :previous_location
 
   def navigate_turn!(turn)
     self.current_direction = NAVIAGATION[current_direction][turn]
@@ -50,13 +58,59 @@ class ManhattanTaxi
   def navigate_blocks!(number_of_blocks)
     case current_direction
     when "N"
-      location[:y] = location[:y] + number_of_blocks
+      current_location[:y] = current_location[:y] + number_of_blocks
     when "E"
-      location[:x] = location[:x] + number_of_blocks
+      current_location[:x] = current_location[:x] + number_of_blocks
     when "S"
-      location[:y] = location[:y] - number_of_blocks
+      current_location[:y] = current_location[:y] - number_of_blocks
     when "W"
-      location[:x] = location[:x] - number_of_blocks
+      current_location[:x] = current_location[:x] - number_of_blocks
     end
+  end
+
+  def record_visited_locations!
+    point_1 = previous_location
+    point_2 = current_location
+
+    case current_direction
+    when "N"
+      y = point_1[:y] + 1
+
+      while y <= point_2[:y]
+        visited_locations << { x: point_1[:x], y: y }
+        y += 1
+      end
+    when "E"
+      x = point_1[:x] + 1
+
+      while x <= point_2[:x]
+        visited_locations << { x: x, y: point_1[:y] }
+        x += 1
+      end
+    when "S"
+      y = point_1[:y] - 1
+
+      while y >= point_2[:y]
+        visited_locations << { x: point_1[:x], y: y }
+        y -= 1
+      end
+    when "W"
+      x = point_1[:x] - 1
+
+      while x >= point_2[:x]
+        visited_locations << { x: x, y: point_1[:y] }
+        x -= 1
+      end
+    end
+  end
+
+  def location_of_headquarters
+    visited_locations.detect do |location|
+      visited_locations.rindex(location) != visited_locations.index(location)
+    end
+  end
+
+  def manhattan_distance(location)
+    location[:x].abs + location[:y].abs
   end
 end

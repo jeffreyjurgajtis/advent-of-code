@@ -25,4 +25,12 @@ class ManhattanTaxiTest < Test::Unit::TestCase
 
     assert_equal(taxi.distance_from_start, 12)
   end
+
+  def test_distance_to_headquarters_example_one
+    directions = %w(R8 R4 R4 R8)
+    taxi = ManhattanTaxi.new(directions: directions)
+    taxi.travel!
+
+    assert_equal(taxi.distance_to_headquarters, 4)
+  end
 end
