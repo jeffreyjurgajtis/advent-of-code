@@ -30,11 +30,9 @@ class ManhattanTaxi
 
   def travel!
     movements.each do |movement|
-      self.previous_location = current_location.clone
+      self.previous_location = current_location
       navigate_turn!(movement.turn)
       navigate_blocks!(movement.number_of_blocks)
-
-      record_visited_locations!
     end
   end
 
@@ -48,8 +46,8 @@ class ManhattanTaxi
 
   private
 
-  attr_reader :movements, :current_location, :visited_locations
-  attr_accessor :current_direction, :previous_location
+  attr_reader :movements, :visited_locations
+  attr_accessor :current_direction, :current_location, :previous_location
 
   def navigate_turn!(turn)
     self.current_direction = NAVIAGATION[current_direction][turn]
@@ -58,49 +56,55 @@ class ManhattanTaxi
   def navigate_blocks!(number_of_blocks)
     case current_direction
     when "N"
-      current_location[:y] = current_location[:y] + number_of_blocks
+      travel_north(number_of_blocks)
     when "E"
-      current_location[:x] = current_location[:x] + number_of_blocks
+      travel_east(number_of_blocks)
     when "S"
-      current_location[:y] = current_location[:y] - number_of_blocks
+      travel_south(number_of_blocks)
     when "W"
-      current_location[:x] = current_location[:x] - number_of_blocks
+      travel_west(number_of_blocks)
+    end
+
+    self.current_location = visited_locations.last
+  end
+
+  def travel_north(number_of_blocks)
+    destination = previous_location[:y] + number_of_blocks
+    y = previous_location[:y] + 1
+
+    while y <= destination
+      visited_locations << { x: previous_location[:x], y: y }
+      y += 1
     end
   end
 
-  def record_visited_locations!
-    point_1 = previous_location
-    point_2 = current_location
+  def travel_east(number_of_blocks)
+    destination = previous_location[:x] + number_of_blocks
+    x = previous_location[:x] + 1
 
-    case current_direction
-    when "N"
-      y = point_1[:y] + 1
+    while x <= destination
+      visited_locations << { x: x, y: previous_location[:y] }
+      x += 1
+    end
+  end
 
-      while y <= point_2[:y]
-        visited_locations << { x: point_1[:x], y: y }
-        y += 1
-      end
-    when "E"
-      x = point_1[:x] + 1
+  def travel_south(number_of_blocks)
+    destination = previous_location[:y] - number_of_blocks
+    y = previous_location[:y] - 1
 
-      while x <= point_2[:x]
-        visited_locations << { x: x, y: point_1[:y] }
-        x += 1
-      end
-    when "S"
-      y = point_1[:y] - 1
+    while y >= destination
+      visited_locations << { x: previous_location[:x], y: y }
+      y -= 1
+    end
+  end
 
-      while y >= point_2[:y]
-        visited_locations << { x: point_1[:x], y: y }
-        y -= 1
-      end
-    when "W"
-      x = point_1[:x] - 1
+  def travel_west(number_of_blocks)
+    destination = previous_location[:x] - number_of_blocks
+    x = previous_location[:x] - 1
 
-      while x >= point_2[:x]
-        visited_locations << { x: x, y: point_1[:y] }
-        x -= 1
-      end
+    while x >= destination
+      visited_locations << { x: x, y: previous_location[:y] }
+      x -= 1
     end
   end
 
